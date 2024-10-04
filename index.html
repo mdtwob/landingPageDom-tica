@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inovação em Domótica: Casa Automatizada através de Hardware Livre</title>
+    <link rel="stylesheet" href="Styles/style.css">
+</head>
+<body>
+
+<header>
+    <h1>Inovação em Domótica: Casa Automatizada através de Hardware Livre</h1>
+</header>
+
+<nav>
+    <a href="#sobre">Sobre o Projeto</a>
+    <a href="#integrantes">Integrantes</a>
+    <a href="#codigos">Códigos</a>
+    <a href="#precos">Preços</a>
+    <a href="#dicas">Dicas</a>
+    <a href="#contato">Contato</a>
+</nav>
+
+<section id="sobre">
+    <h2>Sobre o Projeto</h2>
+    <p>
+        A automação residencial é um avanço tecnológico que facilita a vida, proporcionando mais conforto, segurança e eficiência energética. No entanto, ainda enfrenta desafios como altos custos e a complexidade de instalação. Este projeto busca oferecer uma solução prática e acessível, integrando sensores e placas programáveis para monitoramento em tempo real e automação de sistemas como iluminação e irrigação, incluindo comandos de voz e texto. A proposta visa disseminar o conhecimento sobre automação, promovendo tecnologias sustentáveis e flexíveis, adaptáveis para futuras expansões e aplicações.
+    </p>
+</section>
+
+<section id="integrantes">
+    <h2>Integrantes</h2>
+    <p><strong>Matheus Dakan Batista Bento</strong><br>
+        Instituto Federal de Mato Grosso do Sul (IFMS) - Campus Dourados<br>
+        Email: matheus.bento@estudante.ifms.edu.br</p>
+
+    <p><strong>Jónison Almeida dos Santos</strong><br>
+        Instituto Federal de Mato Grosso do Sul (IFMS) - Campus Dourados<br>
+        Email: jonison.santos@ifms.edu.br</p>
+</section>
+
+<section id="codigos">
+    <h2>Códigos</h2>
+    <p>
+         <p>
+            Aqui você encontrará um exemplo de código que foi utilizado no projeto.
+        </p>
+           <div class="code-container">
+                <pre>
+                    // Exemplo de código em Arduino
+
+                    int pinoledverm = 6; //Pino ligado ao led vermelho
+                    int pinoledazul = 7; //Pino ligado ao led azul
+                    int pinopir = 2;  //Pino ligado ao sensor PIR
+                    int acionamento;  //Variavel para guardar valor do sensor
+                    
+                    int Sensor = 3;
+                    int Buzzer = 13; 
+                    int Var = 0;
+                    
+                    int rele1 = 4;
+                    int rele2 = 5;
+                    
+                    #include <dht11.h>
+                    #define DHT11PIN 8
+                    
+                    dht11 DHT11;
+                    
+                    #define umidadeAnalogica A0 //Atribui o pino A0 a variável umidade - leitura analógica do sensor
+                    #define umidadeDigital 7 //Atribui o pino 7 a variável umidadeDigital - leitura digital do sensor
+                    #define LedVermelho 9 //Atribui o pino 7 a variável LedVermelho
+                    #define LedVerde 10 //Atribui o pino 6 a variável LedVerde
+                    int valorumidade; //Declaração da variável que armazenará o valor da umidade lida - saída analogica
+                    int valorumidadeDigital; //Declaração da variável que armazenara a saída digital do sensor de umidade do solo
+                    
+                    void setup()
+                    {
+                      Serial.begin(9600);
+                      // pinMode(pinoledverm, OUTPUT); //Define pino como saida
+                      // pinMode(pinoledazul, OUTPUT); //Define pino como saida
+                      pinMode(rele1, OUTPUT);
+                      pinMode(rele2, OUTPUT);
+                      pinMode(pinopir, INPUT);   //Define pino sensor como entrada
+                    
+                      pinMode(Buzzer, OUTPUT);
+                      pinMode(Sensor, INPUT);
+                    
+                      pinMode(umidadeAnalogica, INPUT); //Define umidadeAnalogica como entrada
+                      pinMode(umidadeDigital, INPUT); //Define umidadeDigital como entrada
+                      pinMode(LedVermelho, OUTPUT); //Define LedVermelho como saída
+                      pinMode(LedVerde, OUTPUT); //Define LedVerde como saída
+                    
+                      pinMode(6, OUTPUT);
+                      pinMode(9, OUTPUT);
+                      pinMode(10, OUTPUT);
+                      pinMode(11, OUTPUT);
+                      pinMode(12, OUTPUT);
+                    }
+                    void loop()
+                    {
+                     Var=digitalRead(Sensor);
+                     Serial.print(Var);
+                     if(Var<1) 
+                     {
+                     digitalWrite(Buzzer, HIGH);
+                     Serial.println("Fogo detectado!!!"); 
+                     delay(8000);
+                     digitalWrite(Buzzer, LOW);
+                     delay(20);
+                     } 
+                    
+                     acionamento = digitalRead(pinopir); //Le o valor do sensor PIR
+                     if (acionamento == LOW)  //Sem movimento, mantem led azul ligado
+                     {
+                        digitalWrite(rele1, HIGH);
+                        digitalWrite(rele2, HIGH);
+                     }
+                     else  //Caso seja detectado um movimento, aciona o led vermelho
+                     {
+                        digitalWrite(rele1, LOW);
+                        digitalWrite(rele2, LOW);
+                     }
+                    
+                     int chk = DHT11.read(DHT11PIN);
+                    
+                      Serial.println();
+                      Serial.println();
+                      Serial.println();
+                      Serial.println();
+                      Serial.println();
+                    
+                      Serial.print("Umidade (%): ");
+                      Serial.println((float)DHT11.humidity, 2);
+                    
+                      Serial.print("Temperatura (C): ");
+                      Serial.println((float)DHT11.temperature, 2);
+                      delay(2000);
+                    
+                      valorumidade = analogRead(umidadeAnalogica); //Realiza a leitura analógica do sensor e armazena em valorumidade
+                      valorumidade = map(valorumidade, 1023, 315, 0, 100); //Transforma os valores analógicos em uma escala de 0 a 100
+                      Serial.print("Umidade encontrada: "); //Imprime mensagem
+                      Serial.print(valorumidade); //Imprime no monitor serial o valor de umidade em porcentagem
+                      Serial.println();
+                      valorumidadeDigital = digitalRead(umidadeDigital); //Realiza a leitura digital do sensor e armazena em valorumidadeDigital
+                    
+                      digitalWrite(A0, LOW);
+                     // Serial.println("%");
+                      digitalWrite(6, LOW);
+                      digitalWrite(9, LOW);
+                      digitalWrite(10, LOW);
+                      digitalWrite(11, LOW);
+                      digitalWrite(12, LOW);
+                      if (valorumidade < 13) {
+                        digitalWrite(12, HIGH);
+                      } else {
+                        if (valorumidade< 25) {
+                          digitalWrite(11, HIGH);
+                        } else {
+                          if (valorumidade < 70) {
+                            digitalWrite(10, HIGH);
+                          } else {
+                            if (valorumidade < 80) {
+                              digitalWrite(9, HIGH);
+                            } else {
+                              digitalWrite(6, HIGH);
+                            }
+                          }
+                        }
+                      }
+                      delay(100); // Wait for 100 millisecond(s)
+                       if (valorumidadeDigital == 0) { //Se esse valor for igual a 0, será mostrado no monitor serial que o solo está úmido e o led verde se acende
+                         Serial.println("Status: Solo úmido");
+                      //   digitalWrite(LedVermelho, LOW);
+                      //   digitalWrite(LedVerde, HIGH);
+                     }
+                       else { // se esse valor for igual a 1, será mostrado no monitor serial que o solo está seco e o led vermelho se acende
+                         Serial.println("Status: Solo seco");
+                      //   digitalWrite(LedVermelho, HIGH);
+                      //   digitalWrite(LedVerde, LOW);
+                     }
+                      delay(3000); //Atraso de 500ms
+                    
+                      Serial.println(analogRead(A1));
+                      if(analogRead(A1) > 1100) digitalWrite(Buzzer, HIGH);
+                    
+                      else digitalWrite(Buzzer, LOW);
+                    
+                    }
+                </pre>
+            </div>
+        </section>
+    </p>
+</section>
+
+<section id="precos">
+    <h2>Preços</h2>
+    <p>
+        Para tornar o projeto acessível, utilizamos componentes de baixo custo. Abaixo está uma lista dos principais componentes utilizados e seus respectivos preços.
+    </p>
+    <ul>
+        <div class="table-container" style="width: 40%;">
+            <table style="width: 100%;">
+                <thead>
+                    <tr style="text-align: left;">
+                        <th>Componente</th>
+                        <th>Preço</th>
+                        <th>Valor total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Placa MEGA 2560</td>
+                        <td>R$ 169,95</td>
+                        <td>R$ 477,51</td>
+                    </tr>
+                    <tr>
+                        <td>Placa Uno R3 SMD</td>
+                        <td>R$ 44,55</td>
+                    </tr>
+                    <tr>
+                        <td>Buzzer Ativo 5V</td>
+                        <td>R$ 2,28</td>
+                    </tr>
+                    <tr>
+                        <td>Fonte Colméia 12v 10a</td>
+                        <td>R$ 34,03</td>
+                    </tr>
+                    <tr>
+                        <td>Kit de Resistores 1/4W x400</td>
+                        <td>R$ 28,4</td>
+                    </tr>
+                    <tr>
+                        <td>Led Alto Brilho 5mm Azul</td>
+                        <td>R$ 0,23</td>
+                    </tr>
+                    <tr>
+                        <td>Led Alto Brilho 5mm Verde</td>
+                        <td>R$ 0,23</td>
+                    </tr>
+                    <tr>
+                        <td>Led Alto Brilho 5mm Amarelo</td>
+                        <td>R$ 0,23</td>
+                    </tr>
+                    <tr>
+                        <td>Led Alto Brilho 5mm Vermelho</td>
+                        <td>R$ 0,23</td>
+                    </tr>
+                    <tr>
+                        <td>Kit Jumpers</td>
+                        <td>R$ 26,5</td>
+                    </tr>
+                    <tr>
+                        <td>Protoboard 830 Pontos</td>
+                        <td>R$ 13,2</td>
+                    </tr>
+                    <tr>
+                        <td>Protoboard 400 Pontos</td>
+                        <td>R$ 7,5</td>
+                    </tr>
+                    <tr>
+                        <td>Mini Protoboard 170 Pontos</td>
+                        <td>R$ 4,65</td>
+                    </tr>
+                    <tr>
+                        <td>Módulo Relé 5V 2 Canais</td>
+                        <td>R$ 10,35</td>
+                    </tr>
+                    <tr>
+                        <td>Módulo Relé 5V 8 Canais</td>
+                        <td>R$ 47,4</td>
+                    </tr>
+                    <tr>
+                        <td>Módulo Bluetooth HC-05</td>
+                        <td>R$ 26,5</td>
+                    </tr>
+                    <tr>
+                        <td>Micro servo motor SG90</td>
+                        <td>R$ 9,4</td>
+                    </tr>
+                    <tr>
+                        <td>Led Alto Brilho 5mm Branco</td>
+                        <td>R$ 0,23</td>
+                    </tr>
+                    <tr>
+                        <td>Sensor de Movimento Presença PIR</td>
+                        <td>R$ 7,5</td>
+                    </tr>
+                    <tr>
+                        <td>Sensor de Gas MQ-2</td>
+                        <td>R$ 11,3</td>
+                    </tr>
+                    <tr>
+                        <td>Sensor de Nível de Água</td>
+                        <td>R$ 11,3</td>
+                    </tr>
+                    <tr>
+                        <td>Sensor de Umidade do Solo</td>
+                        <td>R$ 8,45</td>
+                    </tr>
+                    <tr>
+                        <td>Sensor de Chama Fogo 760 a 1100 nm</td>
+                        <td>R$ 5,6</td>
+                    </tr>
+                    <tr>
+                        <td>Sensor DHT11 de Temperatura e Umidade</td>
+                        <td>R$ 7,5</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ul>
+</section>
+
+<section id="Mídias">
+    <h2>Mídias</h2>
+    <p>
+        Encontre mídias sobre a instalação, manutenção e uso de sistemas de automação residencial utilizando hardware livre.
+    </p>
+    <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+        <section id="imagem">
+            <h2>Imagem do Projeto</h2>
+            <p>Aqui está uma imagem da elétrica da casa automatizada:</p>
+            <img src="IMG/Imagem.jpeg" alt="Maquete Casa Automatizada" width="500px" height="auto">
+        </section>
+        <section id="imagem">
+            <h2>Tabela de custos</h2>
+            <p>Aqui está uma tabela dos custos da maquete:</p>
+            <img src="IMG/TabelaCustos.jpg" alt="Maquete Casa Automatizada" width="500px" height="auto">
+        </section>
+        <section id="imagem">
+            <h2>Diagrama do projeto</h2>
+            <p>Aqui está um diagrama da casa automatizada:</p>
+            <img src="IMG/Diagrama.jpg" alt="Maquete Casa Automatizada" width="500px" height="auto">
+        </section>
+    </div>
+</section>
+
+<section id="contato">
+    <h2>Contato</h2>
+    <p>
+        Se você tiver dúvidas ou quiser saber mais sobre o projeto, entre em contato conosco:
+    </p>
+    <p><strong>Email:</strong> jonison.santos@ifms.edu.br ou matheus.bento@estudante.ifms.edu.br</p>
+</section>
+
+<footer>
+    <p>&copy; 2024 Inovação em Domótica: Casa Automatizada através de Hardware Livre; Autoria de: Matheus Dakan Batista Bento</p>
+</footer>
+
+</body>
+</html>
