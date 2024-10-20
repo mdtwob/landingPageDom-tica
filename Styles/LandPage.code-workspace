@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "LandPage",
+			"path": ".."
+		},
+		{
+			"name": "images",
+			"path": "../../Arquivo compactado/images"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "LandPage"
+	}
+}
