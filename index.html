@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inovação em Domótica: Casa Automatizada através de Hardware Livre</title>
+    <title>Casa Automatizada com Hardware Livre: Uma Proposta de Domótica Acessível.</title>
     <link rel="stylesheet" href="Styles/style.css">
 </head>
 
 <body>
 
     <header>
-        <h1>Inovação em Domótica: Casa Automatizada através de Hardware Livre</h1>
+        <h1>Casa Automatizada com Hardware Livre: Uma Proposta de Domótica Acessível.</h1>
     </header>
 
     <nav>
@@ -26,12 +26,45 @@
     <section id="sobre">
         <h2>Sobre o Projeto</h2>
         <p>
-            A automação residencial é um avanço tecnológico que facilita a vida, proporcionando mais conforto, segurança
-            e eficiência energética. No entanto, ainda enfrenta desafios como altos custos e a complexidade de
-            instalação. Este projeto busca oferecer uma solução prática e acessível, integrando sensores e placas
-            programáveis para monitoramento em tempo real e automação de sistemas como iluminação e irrigação, incluindo
-            comandos de voz e texto. A proposta visa disseminar o conhecimento sobre automação, promovendo tecnologias
-            sustentáveis e flexíveis, adaptáveis para futuras expansões e aplicações.
+            O projeto Domótica Acessível propõe um sistema de automação residencial de baixo custo, desenvolvido com hardware 
+            livre e componentes reutilizáveis. Seu objetivo é tornar a automação doméstica acessível, sustentável e adaptável 
+            a diferentes contextos — desde residências populares até ambientes educacionais.
+
+            A proposta nasceu no Instituto Federal de Mato Grosso do Sul (IFMS) e combina Arduino, ESP8266 e integração com Alexa, 
+            criando um ambiente inteligente que pode ser controlado por voz, aplicativo móvel ou sensores ambientais.
+
+            Mais do que uma maquete funcional, o projeto representa uma plataforma aberta de aprendizado e inclusão tecnológica, 
+            incentivando o uso da robótica e da Internet das Coisas (IoT) em espaços educacionais e comunitários.
+        </p>
+    </section>
+    <section id="sobre">
+        <h2>Como Funciona</h2>
+        <p>
+            O sistema utiliza dois módulos ESP8266 conectados via Wi-Fi que se comunicam com um dispositivo Alexa Echo Dot e com o 
+            aplicativo Alexa no celular. Por meio de comandos de voz, o usuário pode ligar ou desligar luzes, acionar sistemas de 
+            irrigação, abrir portões ou monitorar o ambiente.
+
+            - Conexão local: funciona apenas quando a Alexa e a maquete estão na mesma rede Wi-Fi.
+
+            - Protocolo HTTP: garante comunicação estável e rápida.
+
+            - Acessibilidade: comandos de voz facilitam o uso por pessoas idosas ou com deficiência motora.
+
+            - Interface intuitiva: o aplicativo exibe o status dos dispositivos e permite controle manual.
+
+            Durante os testes, o sistema apresentou tempo médio de resposta entre 0,9 e 1,3 segundos, com 97,8% de taxa de sucesso 
+            na execução de comandos — desempenho comparável a sistemas comerciais, porém com custo até 80% menor.
+        </p>
+    </section>
+    <section id="sobre">
+        <h2>Sustentabilidade e Relevância Social</h2>
+        <p>
+            O projeto alia tecnologia, sustentabilidade e inclusão, permitindo que qualquer pessoa possa automatizar ambientes de 
+            forma econômica e educativa. Ele pode ser implementado em casas populares, áreas rurais ou escolas técnicas, servindo 
+            como ferramenta de ensino interdisciplinar em programação, eletrônica e IoT.
+
+            Além de reduzir custos e consumo energético, o sistema incentiva a formação de cidadãos tecnologicamente conscientes, 
+            contribuindo para o avanço da educação tecnológica no Brasil.
         </p>
     </section>
 
@@ -56,143 +89,105 @@
             <pre>
                     // Exemplo de código em Arduino
 
-                    int pinoledverm = 6; //Pino ligado ao led vermelho
-                    int pinoledazul = 7; //Pino ligado ao led azul
-                    int pinopir = 2;  //Pino ligado ao sensor PIR
-                    int acionamento;  //Variavel para guardar valor do sensor
-                    
-                    int Sensor = 3;
-                    int Buzzer = 13; 
-                    int Var = 0;
-                    
-                    int rele1 = 4;
-                    int rele2 = 5;
-                    
-                    #include <dht11.h>
-                    #define DHT11PIN 8
-                    
-                    dht11 DHT11;
-                    
-                    #define umidadeAnalogica A0 //Atribui o pino A0 a variável umidade - leitura analógica do sensor
-                    #define umidadeDigital 7 //Atribui o pino 7 a variável umidadeDigital - leitura digital do sensor
-                    #define LedVermelho 9 //Atribui o pino 7 a variável LedVermelho
-                    #define LedVerde 10 //Atribui o pino 6 a variável LedVerde
-                    int valorumidade; //Declaração da variável que armazenará o valor da umidade lida - saída analogica
-                    int valorumidadeDigital; //Declaração da variável que armazenara a saída digital do sensor de umidade do solo
-                    
-                    void setup()
-                    {
-                      Serial.begin(9600);
-                      // pinMode(pinoledverm, OUTPUT); //Define pino como saida
-                      // pinMode(pinoledazul, OUTPUT); //Define pino como saida
-                      pinMode(rele1, OUTPUT);
-                      pinMode(rele2, OUTPUT);
-                      pinMode(pinopir, INPUT);   //Define pino sensor como entrada
-                    
-                      pinMode(Buzzer, OUTPUT);
-                      pinMode(Sensor, INPUT);
-                    
-                      pinMode(umidadeAnalogica, INPUT); //Define umidadeAnalogica como entrada
-                      pinMode(umidadeDigital, INPUT); //Define umidadeDigital como entrada
-                      pinMode(LedVermelho, OUTPUT); //Define LedVermelho como saída
-                      pinMode(LedVerde, OUTPUT); //Define LedVerde como saída
-                    
-                      pinMode(6, OUTPUT);
-                      pinMode(9, OUTPUT);
-                      pinMode(10, OUTPUT);
-                      pinMode(11, OUTPUT);
-                      pinMode(12, OUTPUT);
+                    #include <Arduino.h>
+                    #ifdef ESP32
+                    #include <WiFi.h>
+                    // Se fosse ESP32, troque pelos GPIOs desejados
+                    #define RELAY_PINS {12, 14, 27, 26, 25, 33, 32, 15}
+                    #else
+                    #include <ESP8266WiFi.h>
+                    // ESP8266 NodeMCU -> D1 a D8
+                    #define RELAY_PINS {5, 4, 0, 2, 14, 12, 13, 15}  
+                    // D1=5, D2=4, D3=0, D4=2, D5=14, D6=12, D7=13, D8=15
+                    #endif
+
+                    #include "fauxmoESP.h"
+
+                    #define SERIAL_BAUDRATE 115200
+
+                    #define WIFI_SSID "Am2"
+                    #define WIFI_PASS "cityUmori123"
+
+                    // Nomes dos dispositivos Alexa (LED 9 até LED 16)
+                    const char* lampNames[8] = {
+                    "LED 9",
+                    "LED 10",
+                    "LED 11",
+                    "LED 12",
+                    "LED 13",
+                    "LED 14",
+                    "LED 15",
+                    "LED 16"
+                    };
+
+                    // Pinos dos relés
+                    const int relayPins[8] = RELAY_PINS;
+
+                    fauxmoESP fauxmo;
+
+                    // --- Configuração do Wi-Fi ---
+                    void wifiSetup() {
+                    WiFi.mode(WIFI_STA);
+                    Serial.printf("[WIFI] Conectando a %s ", WIFI_SSID);
+                    WiFi.begin(WIFI_SSID, WIFI_PASS);
+
+                    while (WiFi.status() != WL_CONNECTED) {
+                        Serial.print(".");
+                        delay(100);
                     }
-                    void loop()
-                    {
-                     Var=digitalRead(Sensor);
-                     Serial.print(Var);
-                     if(Var<1) 
-                     {
-                     digitalWrite(Buzzer, HIGH);
-                     Serial.println("Fogo detectado!!!"); 
-                     delay(8000);
-                     digitalWrite(Buzzer, LOW);
-                     delay(20);
-                     } 
-                    
-                     acionamento = digitalRead(pinopir); //Le o valor do sensor PIR
-                     if (acionamento == LOW)  //Sem movimento, mantem led azul ligado
-                     {
-                        digitalWrite(rele1, HIGH);
-                        digitalWrite(rele2, HIGH);
-                     }
-                     else  //Caso seja detectado um movimento, aciona o led vermelho
-                     {
-                        digitalWrite(rele1, LOW);
-                        digitalWrite(rele2, LOW);
-                     }
-                    
-                     int chk = DHT11.read(DHT11PIN);
-                    
-                      Serial.println();
-                      Serial.println();
-                      Serial.println();
-                      Serial.println();
-                      Serial.println();
-                    
-                      Serial.print("Umidade (%): ");
-                      Serial.println((float)DHT11.humidity, 2);
-                    
-                      Serial.print("Temperatura (C): ");
-                      Serial.println((float)DHT11.temperature, 2);
-                      delay(2000);
-                    
-                      valorumidade = analogRead(umidadeAnalogica); //Realiza a leitura analógica do sensor e armazena em valorumidade
-                      valorumidade = map(valorumidade, 1023, 315, 0, 100); //Transforma os valores analógicos em uma escala de 0 a 100
-                      Serial.print("Umidade encontrada: "); //Imprime mensagem
-                      Serial.print(valorumidade); //Imprime no monitor serial o valor de umidade em porcentagem
-                      Serial.println();
-                      valorumidadeDigital = digitalRead(umidadeDigital); //Realiza a leitura digital do sensor e armazena em valorumidadeDigital
-                    
-                      digitalWrite(A0, LOW);
-                     // Serial.println("%");
-                      digitalWrite(6, LOW);
-                      digitalWrite(9, LOW);
-                      digitalWrite(10, LOW);
-                      digitalWrite(11, LOW);
-                      digitalWrite(12, LOW);
-                      if (valorumidade < 13) {
-                        digitalWrite(12, HIGH);
-                      } else {
-                        if (valorumidade< 25) {
-                          digitalWrite(11, HIGH);
-                        } else {
-                          if (valorumidade < 70) {
-                            digitalWrite(10, HIGH);
-                          } else {
-                            if (valorumidade < 80) {
-                              digitalWrite(9, HIGH);
-                            } else {
-                              digitalWrite(6, HIGH);
-                            }
-                          }
+                    Serial.println();
+                    Serial.printf("[WIFI] Conectado! SSID: %s, IP: %s\n",
+                                    WiFi.SSID().c_str(),
+                                    WiFi.localIP().toString().c_str());
+                    }
+
+                    void setup() {
+                    Serial.begin(SERIAL_BAUDRATE);
+                    Serial.println();
+
+                    wifiSetup();
+
+                    // Configura os 8 pinos como saída
+                    for (int i = 0; i < 8; i++) {
+                        pinMode(relayPins[i], OUTPUT);
+                        digitalWrite(relayPins[i], LOW); // desliga todos no início
+                    }
+
+                    // fauxmo config
+                    fauxmo.createServer(true);
+                    fauxmo.setPort(80);
+                    fauxmo.enable(true);
+
+                    // Adiciona os 8 dispositivos
+                    for (int i = 0; i < 8; i++) {
+                        fauxmo.addDevice(lampNames[i]);
+                    }
+
+                    // Callback de estado
+                    fauxmo.onSetState([](unsigned char device_id, const char * device_name, bool state, unsigned char value) {
+                        Serial.printf("[MAIN] Device #%d (%s) state: %s value: %d\n",
+                                    device_id, device_name, state ? "ON" : "OFF", value);
+
+                        for (int i = 0; i < 8; i++) {
+                        if (strcmp(device_name, lampNames[i]) == 0) {
+                            Serial.printf("Relay %d switched by Alexa\n", i + 9); // agora começa no 9
+                            digitalWrite(relayPins[i], state ? LOW : HIGH);
+                        } 
                         }
-                      }
-                      delay(100); // Wait for 100 millisecond(s)
-                       if (valorumidadeDigital == 0) { //Se esse valor for igual a 0, será mostrado no monitor serial que o solo está úmido e o led verde se acende
-                         Serial.println("Status: Solo úmido");
-                      //   digitalWrite(LedVermelho, LOW);
-                      //   digitalWrite(LedVerde, HIGH);
-                     }
-                       else { // se esse valor for igual a 1, será mostrado no monitor serial que o solo está seco e o led vermelho se acende
-                         Serial.println("Status: Solo seco");
-                      //   digitalWrite(LedVermelho, HIGH);
-                      //   digitalWrite(LedVerde, LOW);
-                     }
-                      delay(3000); //Atraso de 500ms
-                    
-                      Serial.println(analogRead(A1));
-                      if(analogRead(A1) > 1100) digitalWrite(Buzzer, HIGH);
-                    
-                      else digitalWrite(Buzzer, LOW);
-                    
+                    });
                     }
+
+                    void loop() {
+                    fauxmo.handle();
+
+                    static unsigned long last = millis();
+                    if (millis() - last > 5000) {
+                        last = millis();
+                        Serial.printf("[MAIN] Free heap: %d bytes\n", ESP.getFreeHeap());
+                    }
+                    }
+
+
                 </pre>
         </div>
     </section>
@@ -210,201 +205,121 @@
                 <table style="width: 100%;">
                     <thead>
                         <tr style="text-align: left;">
-                            <th>Componente</th>
-                            <th>Preço</th>
-                            <th>Valor total</th>
+                            <th>Materiais Utilizados</th>
+                            <th>Valor à Vista (R$)</th>
+                            <th>Valor Somado (R$)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Placa MEGA 2560</td>
-                            <td>R$ 169,95</td>
-                            <td>R$ 477,51</td>
-                        </tr>
-                        <tr>
-                            <td>Placa Uno R3 SMD</td>
-                            <td>R$ 44,55</td>
-                        </tr>
-                        <tr>
-                            <td>Buzzer Ativo 5V</td>
-                            <td>R$ 2,28</td>
-                        </tr>
-                        <tr>
-                            <td>Fonte Colméia 12v 10a</td>
-                            <td>R$ 34,03</td>
-                        </tr>
-                        <tr>
-                            <td>Kit de Resistores 1/4W x400</td>
-                            <td>R$ 28,4</td>
-                        </tr>
-                        <tr>
-                            <td>Led Alto Brilho 5mm Azul</td>
-                            <td>R$ 0,23</td>
-                        </tr>
-                        <tr>
-                            <td>Led Alto Brilho 5mm Verde</td>
-                            <td>R$ 0,23</td>
-                        </tr>
-                        <tr>
-                            <td>Led Alto Brilho 5mm Amarelo</td>
-                            <td>R$ 0,23</td>
-                        </tr>
-                        <tr>
-                            <td>Led Alto Brilho 5mm Vermelho</td>
-                            <td>R$ 0,23</td>
-                        </tr>
-                        <tr>
-                            <td>Kit Jumpers</td>
-                            <td>R$ 26,5</td>
-                        </tr>
-                        <tr>
-                            <td>Protoboard 830 Pontos</td>
-                            <td>R$ 13,2</td>
-                        </tr>
-                        <tr>
-                            <td>Protoboard 400 Pontos</td>
-                            <td>R$ 7,5</td>
-                        </tr>
-                        <tr>
-                            <td>Mini Protoboard 170 Pontos</td>
-                            <td>R$ 4,65</td>
-                        </tr>
-                        <tr>
-                            <td>Módulo Relé 5V 2 Canais</td>
-                            <td>R$ 10,35</td>
-                        </tr>
-                        <tr>
-                            <td>Módulo Relé 5V 8 Canais</td>
-                            <td>R$ 47,4</td>
-                        </tr>
-                        <tr>
-                            <td>Módulo Bluetooth HC-05</td>
-                            <td>R$ 26,5</td>
-                        </tr>
-                        <tr>
-                            <td>Micro servo motor SG90</td>
-                            <td>R$ 9,4</td>
-                        </tr>
-                        <tr>
-                            <td>Led Alto Brilho 5mm Branco</td>
-                            <td>R$ 0,23</td>
-                        </tr>
-                        <tr>
-                            <td>Sensor de Movimento Presença PIR</td>
-                            <td>R$ 7,5</td>
-                        </tr>
-                        <tr>
-                            <td>Sensor de Gas MQ-2</td>
-                            <td>R$ 11,3</td>
-                        </tr>
-                        <tr>
-                            <td>Sensor de Nível de Água</td>
-                            <td>R$ 11,3</td>
-                        </tr>
-                        <tr>
-                            <td>Sensor de Umidade do Solo</td>
-                            <td>R$ 8,45</td>
-                        </tr>
-                        <tr>
-                            <td>Sensor de Chama Fogo 760 a 1100 nm</td>
-                            <td>R$ 5,6</td>
-                        </tr>
-                        <tr>
-                            <td>Sensor DHT11 de Temperatura e Umidade</td>
-                            <td>R$ 7,5</td>
-                        </tr>
+                            <tr>
+                                <td>Placa ESP8266 (4x)</td>
+                                <td>131,60</td>
+                                <td>560,85</td>
+                            </tr>
+                            <tr>
+                                <td>Placa UNO R3</td>
+                                <td>74,90</td>
+                            </tr>
+                            <tr>
+                                <td>Buzzer ativo 5V</td>
+                                <td>2,30</td>
+                            </tr>
+                            <tr>
+                                <td>Fonte de alimentação</td>
+                                <td>41,20</td>
+                            </tr>
+                            <tr>
+                                <td>Kit de resistores 1/4W x400</td>
+                                <td>28,40</td>
+                            </tr>
+                            <tr>
+                                <td>LEDs alto brilho (x18)</td>
+                                <td>7,20</td>
+                            </tr>
+                            <tr>
+                                <td>Jumpers e cabos</td>
+                                <td>55,00</td>
+                            </tr>
+                            <tr>
+                                <td>Módulo relé 2 canais (4x)</td>
+                                <td>51,60</td>
+                            </tr>
+                            <tr>
+                                <td>Módulo relé 8 canais</td>
+                                <td>89,90</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor de movimento PIR</td>
+                                <td>11,90</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor de gás MQ-2</td>
+                                <td>19,90</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor de nível de água</td>
+                                <td>23,55</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor de umidade do solo</td>
+                                <td>7,50</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor de chama e fogo</td>
+                                <td>6,90</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor DHT11 de temperatura e umidade</td>
+                                <td>8,90</td>
+                            </tr>
                     </tbody>
                 </table>
             </div>
         </ul>
     </section>
 
-    <section id="Mídias">
-        <h2>Mídias</h2>
-        <p>
-            Encontre mídias sobre a instalação, manutenção e uso de sistemas de automação residencial utilizando
-            hardware livre.
-        </p>
+    <section id="midias">
+  <h2>Mídias</h2>
+  <p>
+    Encontre mídias sobre a instalação, manutenção e uso de sistemas de automação residencial utilizando
+    hardware livre nos links a seguir:
+  </p>
 
-        <!-- <div class="main-carousel">
-            <section class="carousel" aria-label="Gallery">
-                <ol class="carousel__viewport">
-                    <li id="carousel__slide1" tabindex="0" class="carousel__slide">
-                        <div class="paragraph">
-                            <h2>Imagem do Projeto</h2>
-                            <p>Aqui está uma imagem da elétrica da casa automatizada:</p>
-                        </div>
-                        <div class="carousel__snapper">
-                            <div class="carousel__img">
-                                <img src="images/01.jpg" alt="" />
-                            </div>
-                            <a href="#carousel__slide4" class="carousel__prev">Go to last slide</a>
-                            <a href="#carousel__slide2" class="carousel__next">Go to next slide</a>
-                        </div>
-                    </li>
-                    <li id="carousel__slide2" tabindex="0" class="carousel__slide">
-                        <div class="paragraph">
-                            <h2>Tabela de custos</h2>
-                            <p>Aqui está uma tabela dos custos da maquete:</p>
-                        </div>
+  <div style="text-align:center;">
+    <ul style="list-style:none; padding:0; margin-top:15px;">
+      <li style="margin:10px 0;">
+        🎥 <a href="https://youtube.com/shorts/r_QERmzUsv8?si=ywYKWYCK7cjukApj" target="_blank">
+        Demonstração curta da maquete em funcionamento (YouTube Shorts)
+        </a>
+      </li>
 
-                        <div class="carousel__img">
-                            <img src="images/02.jpg" alt="" />
-                        </div>
-                        <div class="carousel__snapper"></div>
-                        <a href="#carousel__slide1" class="carousel__prev">Go to previous slide</a>
-                        <a href="#carousel__slide3" class="carousel__next">Go to next slide</a>
-                    </li>
-                    <li id="carousel__slide3" tabindex="0" class="carousel__slide">
-                        <div class="paragraph">
-                            <h2>Diagrama do projeto</h2>
-                            <p>Aqui está um diagrama da casa automatizada:</p>
-                        </div>
-                        <div class="carousel__img">
-                            <img src="images/03.jpg" alt="" />
-                        </div>
-                        <div class="carousel__snapper"></div>
-                        <a href="#carousel__slide2" class="carousel__prev">Go to previous slide</a>
-                        <a href="#carousel__slide4" class="carousel__next">Go to next slide</a>
-                    </li>
-                    <li id="carousel__slide4" tabindex="0" class="carousel__slide">
-                        <div class="carousel__img">
-                            <iframe width="560" height="315"
-                                src="https://www.youtube.com/embed/r1Ga6A9G1pQ?si=1AuWijadNL_Ns5tU"
-                                title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        </div>
-                        <div class="carousel__snapper"></div>
-                        <a href="#carousel__slide3" class="carousel__prev">Go to previous slide</a>
-                        <a href="#carousel__slide1" class="carousel__next">Go to next slide</a>
-                    </li>
-                </ol>
-                <!-- <aside class="carousel__navigation"> -->
-                <!--   <ol class="carousel__navigation-list"> -->
-                <!--     <li class="carousel__navigation-item"> -->
-                <!--       <a href="#carousel__slide1" class="carousel__navigation-button" -->
-                <!--         >Go to slide 1</a -->
-                <!--       > -->
-                <!--     </li> -->
-                <!--     <li class="carousel__navigation-item"> -->
-                <!--       <a href="#carousel__slide2" class="carousel__navigation-button" -->
-                <!--         >Go to slide 2</a -->
-                <!--       > -->
-                <!--     </li> -->
-                <!--     <li class="carousel__navigation-item"> -->
-                <!--       <a href="#carousel__slide3" class="carousel__navigation-button" -->
-                <!--         >Go to slide 3</a -->
-                <!--       > -->
-                <!--     </li> -->
-                <!--     <li class="carousel__navigation-item"> -->
-                <!--       <a href="#carousel__slide4" class="carousel__navigation-button" -->
-                <!--         >Go to slide 4</a -->
-                <!--       > -->
-                <!--     </li> -->
-                <!--   </ol> -->
-                <!-- </aside> -->
-            </section>
+      <li style="margin:10px 0;">
+        🎥 <a href="https://youtu.be/r1Ga6A9G1pQ?si=a6D65sNx8rAF3b1i" target="_blank">
+        Apresentação completa do projeto Domótica Acessível (YouTube)
+        </a>
+      </li>
+
+      <li style="margin:10px 0;">
+        💻 <a href="https://github.com/mdtwob/landingPageDom-tica" target="_blank">
+        Código-fonte da Landing Page (GitHub)
+        </a>
+      </li>
+
+      <li style="margin:10px 0;">
+        🏠 <a href="https://github.com/mdtwob/Casa-automatizada" target="_blank">
+        Código e documentação do sistema de automação (GitHub)
+        </a>
+      </li>
+
+      <li style="margin:10px 0;">
+        📄 <a href="https://docs.google.com/document/d/1cI6A9vms3zurmBKtLc9Jc8Fwkh2-o7h3tkI3oUu_ySU/edit?usp=sharing" target="_blank">
+        Relatório e documentação detalhada do projeto (Google Docs)
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
         </div> -->
         <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
         <section id="imagem">
@@ -415,7 +330,7 @@
         <section id="imagem">
             <h2>Tabela de custos</h2>
             <p>Aqui está uma tabela dos custos da maquete:</p>
-            <img src="images/02.jpg" alt="Maquete Casa Automatizada" width="500px" height="auto">
+            <img src="images/02.jpeg" alt="Maquete Casa Automatizada" width="500px" height="auto">
         </section>
         <section id="imagem">
             <h2>Diagrama do projeto</h2>
@@ -431,10 +346,11 @@
             Se você tiver dúvidas ou quiser saber mais sobre o projeto, entre em contato conosco:
         </p>
         <p><strong>Email:</strong> jonison.santos@ifms.edu.br ou matheus.bento@estudante.ifms.edu.br</p>
+        <p><strong>Instagram:</strong> @gato__vesgo</p>
     </section>
 
     <footer>
-        <p>&copy; 2024 Inovação em Domótica: Casa Automatizada através de Hardware Livre; Autoria de: Matheus Dakan
+        <p>&copy; 2024 Casa Automatizada com Hardware Livre: Uma Proposta de Domótica Acessível.; Autoria de: Matheus Dakan
             Batista Bento</p>
     </footer>
 
